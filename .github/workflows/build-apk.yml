@@ -1,10 +1,10 @@
+
 name: Build ChessVision APK
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -12,31 +12,40 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Extract ChessVision ZIP
+      - name: Extract project
         run: |
-          unzip -o ChessVision_0.1.0_source.zip -d extracted
-          cp -r extracted/. .
+          unzip -o ChessVision_0.2.0_source.zip -d project
+          cp -r project/. .
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Download Stockfish ARM64
+        run: |
+          mkdir -p app/src/main/assets
+          curl -fL --retry 3 \
+            https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-android-arm64-universal.tar.gz \
+            -o /tmp/stockfish.tar.gz
+          mkdir -p /tmp/sf
+          tar -xzf /tmp/stockfish.tar.gz -C /tmp/sf
+          ENGINE="$(find /tmp/sf -type f -name 'stockfish*' | head -n 1)"
+          test -n "$ENGINE"
+          cp "$ENGINE" app/src/main/assets/stockfish
+          chmod 755 app/src/main/assets/stockfish
+
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Build APK
-        run: |
-          gradle --version
-          gradle assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: gradle/actions/setup-gradle@v4
         with:
-          name: ChessVision-APK
+          gradle-version: '8.9'
+
+      - name: Build APK
+        run: gradle assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ChessVision-0.2.0-APK
           path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          
