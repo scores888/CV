@@ -1,4 +1,4 @@
-name: Build ChessVision 0.5.0 APK
+name: Build ChessVision 0.5.1 APK
 
 on:
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          ZIP="ChessVision_0.5.0_updated.zip"
+          ZIP="ChessVision_0.5.1_updated.zip"
 
           if [ ! -f "$ZIP" ]; then
             echo "::error::Не найден $ZIP в корне репозитория."
@@ -206,7 +206,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessVision-0.5.0-APK
+          name: ChessVision-0.5.1-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
