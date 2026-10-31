@@ -26,7 +26,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          ZIP="ChessVision_0.5.1_updated.zip"
+          ZIP="ChessVision_0.5.1_fast_overlay.zip"
 
           if [ ! -f "$ZIP" ]; then
             echo "::error::Не найден $ZIP в корне репозитория."
