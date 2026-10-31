@@ -17,7 +17,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -o ChessVision_0.4.3_source.zip -d project
+          unzip -o ChessVision_0.4.4_source.zip -d project
           cp -r project/. .
 
       - name: Download Stockfish ARM64
@@ -54,6 +54,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessVision-0.4.3-APK
+          name: ChessVision-0.4.4-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
